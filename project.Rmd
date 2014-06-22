@@ -9,9 +9,9 @@ In order to provide consistent data to construct features, the first task was to
 1.  Remove excel division error strings `#DIV/0!` and replace with `NA` values.
 1.  Convert empty strings to `NA` values.
 
-The primary code to preprocess the data is located [here](/blob/master/project.R).
+The primary code to preprocess the data is located [here](http://github.com/bpoweski/practical-machine-learning/blob/master/project.R).
 
-There is additional code within the knitr markdown file [here](/blob/master/project.Rmd).
+There is additional code within the knitr markdown file [here](http://github.com/bpoweski/practical-machine-learning/blob/master/project.Rmd).
 
 ## Feature Selection
 
