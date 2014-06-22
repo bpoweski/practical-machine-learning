@@ -52,3 +52,18 @@ transform.features <- function(x) {
 
 ## try only columns that have values
 training.features <- drop.columns(raw.train[,eval(names(which(na.cols == F))),with=F])
+
+write.pml.predictions <- function(x) {
+    n = length(x)
+    for(i in 1:n){
+        filename = paste0("problem_id_",i,".txt")
+        write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+    }
+}
+
+submit.prediction <- function(x, validation) {
+    in.train <- createDataPartition(x$classe, p=.60, list=FALSE)
+    train <- x[in.train[,1]]
+    model.rf <- train(y=as.factor(train$classe), x=train[,!"classe",with=F], tuneGrid=data.frame(mtry=3), trControl=trainControl(method="none"), method="parRF")  
+    write.pml.predictions(predict(model.rf, newdata=drop.columns(validation[,eval(names(which(na.cols == F))[-60]),with=F])))
+}
