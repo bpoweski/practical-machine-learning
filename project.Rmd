@@ -1,0 +1,64 @@
+# Coursera Machine Learning Project
+
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset).
+
+## Modeling
+
+In order to provide consistent data to construct features, the first task was to sanitize the data.  The following steps where taken:
+
+1.  Remove excel division error strings `#DIV/0!` and replace with `NA` values.
+1.  Convert empty strings to `NA` values.
+
+## Feature Selection
+
+With a clean data set, the next task was to explore the data and determine what is likely useful information.  An important goal of any model to generalize well with unseen data.  Given this,
+
+1.  Any features that contained NA values were removed.
+1.  Several columns appeared to be entirely metadata.  These columns were dropped as any correlation that exists would likely be spurious and therefore cause the model to perform poorly.
+
+The following fields removed included:
+
+* the unlabled row index
+* `user_name`
+* `raw_timestamp_part_1`
+* `raw_timestamp_part_2`
+* `cvtd_timestamp`
+* `new_window`
+* `num_window`
+
+## Cross Validation
+
+Cross validation was achieved by splitting the training data into a test set and a training set using the following:
+
+```{r cross_validate}
+in.train <- createDataPartition(training.features$classe, p=.60, list=FALSE)
+
+train <- training.features[in.train[,1]]
+test <- training.features[-in.train[,1]]
+```
+
+The data was partioned by the `classe` variable to ensure the training set and test set contain examples of each class. 60% of the training data was allocated to the training set and the remainder for the validation set.
+
+## Prediction
+
+The random forest model was initially used to prediction.
+
+```{r train, echo=F}
+model.rf <- train(y=as.factor(train$classe), x=train[,!"classe",with=F], tuneGrid=data.frame(mtry=3), trControl=trainControl(method="none"), method="parRF")
+```
+
+```{r confusion_matrix, echo=F}
+confusionMatrix(predict(model.rf, newdata=transform.features(test)), factor(test$classe))
+```
+
+It's estimated that the out of sample error would reflect the Kappa statistic of `r confusionMatrix(predict(model.rf, newdata=transform.features(test)), factor(test$classe))$overall["Kappa"]`.
+
+### Variable Importance
+
+```{r variable_importance, echo=F}
+print(plot(varImp(model.rf, scale = FALSE)))
+```
+
+## Conclusion
+
+The random forest algorithm appears to perform very well even though a very important feature such as `num_window` was dropped as it likely was not useful for prediction.
