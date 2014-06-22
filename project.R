@@ -31,7 +31,7 @@ read.pml <- function(file) {
 }
 
 build.report <- function() {
-    knit("project.Rmd", "index.md")
+    knit2html("project.Rmd", "index.html")
 }
 
 raw.train <- read.pml("pml-training.csv")
