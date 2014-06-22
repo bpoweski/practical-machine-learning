@@ -9,6 +9,10 @@ In order to provide consistent data to construct features, the first task was to
 1.  Remove excel division error strings `#DIV/0!` and replace with `NA` values.
 1.  Convert empty strings to `NA` values.
 
+The primary code to preprocess the data is located [here](/blob/master/project.R).
+
+There is additional code within the knitr markdown file [here](/blob/master/project.Rmd).
+
 ## Feature Selection
 
 With a clean data set, the next task was to explore the data and determine what is likely useful information.  An important goal of any model to generalize well with unseen data.  Given this,
