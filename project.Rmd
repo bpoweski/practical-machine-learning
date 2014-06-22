@@ -61,4 +61,4 @@ print(plot(varImp(model.rf, scale = FALSE)))
 
 ## Conclusion
 
-The random forest algorithm appears to perform very well even though a very important feature such as `num_window` was dropped as it likely was not useful for prediction.
+The random forest algorithm appears to perform very well for predicting activities from accelerometers measurements.
